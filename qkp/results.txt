@@ -1,0 +1,70 @@
+=== AUTOMATED ENCODING COMPARISON ===
+Problem: 20 items, capacity = 50
+
+
+=== Finding optimal A for UNARY ===
+A=  10.0: feasible=1.00, profit= 314.5, violation=0.000
+A=  20.0: feasible=1.00, profit= 253.3, violation=0.000
+A=  50.0: feasible=1.00, profit= 187.8, violation=0.000
+A= 100.0: feasible=1.00, profit= 151.2, violation=0.000
+A= 200.0: feasible=1.00, profit= 132.8, violation=0.000
+Best A = 10 (score = 1.031)
+
+=== Finding optimal A for BINARY ===
+A=   0.1: feasible=0.00, profit=   0.0, violation=44.000
+A=   0.5: feasible=0.00, profit=   0.0, violation=14.000
+A=   1.0: feasible=0.00, profit=   0.0, violation=3.375
+A=   2.0: feasible=0.01, profit= 468.0, violation=2.425
+A=   5.0: feasible=0.26, profit= 412.6, violation=1.370
+A=  10.0: feasible=0.43, profit= 340.2, violation=0.805
+A=  20.0: feasible=0.61, profit= 298.0, violation=0.385
+Best A = 20 (score = 0.307)
+
+=== Finding optimal A for ONE_HOT ===
+A=  50.0: feasible=0.00, profit=   0.0, violation=59.305
+A= 100.0: feasible=0.00, profit=   0.0, violation=59.135
+A= 200.0: feasible=0.01, profit=  96.0, violation=57.895
+A= 500.0: feasible=0.00, profit=   0.0, violation=56.890
+A=1000.0: feasible=0.00, profit=   0.0, violation=57.815
+Best A = 200 (score = 0.003)
+
+=== Optimal penalty parameters ===
+unary   : A = 10
+binary  : A = 20
+one_hot : A = 200
+
+=== Performance comparison (10 trials) ===
+
+--- UNARY (A=10) ---
+  Trial  5: 500 feasible solutions
+  Trial 10: 500 feasible solutions
+  Feasible rate: 99.9% ± 0.2%
+  Profit: 315.6 ± 40.6
+  Best profit: 434.6 ± 11.6
+  Weight: 37.8 ± 3.9
+  Constraint violation: 0.0010 ± 0.0316
+
+--- BINARY (A=20) ---
+  Trial  5: 333 feasible solutions
+  Trial 10: 331 feasible solutions
+  Feasible rate: 65.2% ± 2.1%
+  Profit: 311.7 ± 78.9
+  Best profit: 460.3 ± 7.2
+  Weight: 44.3 ± 7.5
+  Constraint violation: 0.3484 ± 0.4781
+
+--- ONE_HOT (A=200) ---
+  Trial  5:   0 feasible solutions
+  Trial 10:   3 feasible solutions
+  Feasible rate: 0.3% ± 0.2%
+  Profit: 208.8 ± 50.7
+  Best profit: 239.4 ± 39.4
+  Weight: 42.3 ± 6.0
+  Constraint violation: 58.1610 ± 12.5231
+
+=== FINAL COMPARISON SUMMARY ===
+Encoding   Feasible%  Avg Profit   Best Profit  Opt A   
+-------------------------------------------------------
+unary      99.9%±0.2%    315.6±40.6    434.6±11.6   10      
+binary     65.2%±2.1%    311.7±78.9    460.3± 7.2   20      
+one_hot    0.3%±0.2%    208.8±50.7    239.4±39.4   200 
