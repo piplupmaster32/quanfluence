@@ -1,0 +1,72 @@
+3 finished goods: f1, f2, f3
+	-demand for each is: d1, d2, d3 (producing more than the demand should be penalized heavily)
+	-selling price for each is: s1, s2, s3
+
+3 raw materials: r1, r2, r3
+	-upper limit for each is: R1, R2, R3 (using more than the upper limit for each should be penalized heavily)
+	-cost of each is: c1, c2, c3
+
+we need to figure out how much of f1, f2 and f3 to produce (x1, x2, x3) in order to maximize profit
+
+FORMULATION 1:(STRICT CONSTRAINT?)
+Maximize: (s₁ - c₁a₁₁ - c₂a₂₁ - c₃a₃₁)x₁ + (s₂ - c₁a₁₂ - c₂a₂₂ - c₃a₃₂)x₂ + (s₃ - c₁a₁₃ - c₂a₂₃ - c₃a₃₃)x₃
+
+Subject to:
+    x₁ ≤ d₁	=> taken care of in encoding x1
+    x₂ ≤ d₂  	=> taken care of in encoding x2		=> No explicit constraint Hamiltonian required?
+    x₃ ≤ d₃	=> taken care of in encoding x3
+
+    a₁₁x₁ + a₁₂x₂ + a₁₃x₃ ≤ R₁	
+    a₂₁x₁ + a₂₂x₂ + a₂₃x₃ ≤ R₂				=> Requires constraint term in the Hamiltonian?
+    a₃₁x₁ + a₃₂x₂ + a₃₃x₃ ≤ R₃
+    x₁, x₂, x₃ ≥ 0
+
+FORMULATION 2: (NO STRICT CONSTRAINT, BUT CAN CONVERT TO QUBO?)
+Maximize: Profit - Demand_Penalties - Resource_Penalties
+
+Profit = (s₁x₁ + s₂x₂ + s₃x₃) - (c₁R₁_used + c₂R₂_used + c₃R₃_used)
+
+Where:
+R₁_used = a₁₁x₁ + a₁₂x₂ + a₁₃x₃
+R₂_used = a₂₁x₁ + a₂₂x₂ + a₂₃x₃  
+R₃_used = a₃₁x₁ + a₃₂x₂ + a₃₃x₃
+
+Demand_Penalties = M₁·max(0, x₁-d₁) + M₂·max(0, x₂-d₂) + M₃·max(0, x₃-d₃)
+
+Resource_Penalties = M₄·max(0, R₁_used-R₁) + M₅·max(0, R₂_used-R₂) + M₆·max(0, R₃_used-R₃)
+
+OR
+
+Maximize: (s₁x₁ + s₂x₂ + s₃x₃) - (c₁R₁_used + c₂R₂_used + c₃R₃_used) - (M₁u₁ + M₂u₂ + M₃u₃) - (M₄v₁ + M₅v₂ + M₆v₃)
+
+Subject to:
+# Production recipe constraints (define raw material usage)
+R₁_used = a₁₁x₁ + a₁₂x₂ + a₁₃x₃
+R₂_used = a₂₁x₁ + a₂₂x₂ + a₂₃x₃
+R₃_used = a₃₁x₁ + a₃₂x₂ + a₃₃x₃
+
+# Demand overage constraints
+x₁ - d₁ ≤ u₁
+x₂ - d₂ ≤ u₂  
+x₃ - d₃ ≤ u₃
+
+# Resource overage constraints  
+R₁_used - R₁ ≤ v₁
+R₂_used - R₂ ≤ v₂
+R₃_used - R₃ ≤ v₃
+
+# Non-negativity
+x₁, x₂, x₃ ≥ 0
+u₁, u₂, u₃ ≥ 0  
+v₁, v₂, v₃ ≥ 0
+
+
+QUBO:
+Profit = s₁(∑ⱼ q₁ⱼ·2ʲ) + s₂(∑ⱼ q₂ⱼ·2ʲ) + s₃(∑ⱼ q₃ⱼ·2ʲ) - Raw_Material_Costs
+
+Raw_Material_Costs = c₁(a₁₁(∑ⱼ q₁ⱼ·2ʲ) + a₁₂(∑ⱼ q₂ⱼ·2ʲ) + a₁₃(∑ⱼ q₃ⱼ·2ʲ)) + ...
+
+For penalty terms:
+max(0, x₁-d₁) = max(0, (∑ⱼ q₁ⱼ·2ʲ) - d₁)
+
+
